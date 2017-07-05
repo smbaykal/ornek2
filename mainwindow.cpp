@@ -37,8 +37,11 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(onEncoderTestDateChanged(QString)));
 
     qSort(allSerials.begin(), allSerials.end());
+    qSort(txtSerials.begin(), txtSerials.end());
+    qSort(camTestSerials.begin(), camTestSerials.end());
+    qSort(encoderTestSerials.begin(), encoderTestSerials.end());
 
-    output(); //txt output
+    output(); //txt output*/
 }
 
 MainWindow::~MainWindow()
@@ -50,9 +53,13 @@ MainWindow::~MainWindow()
 void MainWindow::readFiles()
 {
     QDir dir("log");
-    QDirIterator iterator(dir.absolutePath(), QStringList() << "*.txt", QDir::Files, QDirIterator::Subdirectories);
-    while(iterator.hasNext()){
-        QFile file(iterator.next());
+    /*QDirIterator iterator(dir.absolutePath(), QStringList() << "*.txt", QDir::Files, QDirIterator::Subdirectories);
+    while(iterator.hasNext()){*/
+    QStringList nameFilter("*.txt");
+    QStringList txtFiles = dir.entryList(nameFilter);
+        //QFile file(iterator.next());
+    foreach(QString fileName, txtFiles){
+        QFile file(dir.absolutePath() + "/" + fileName);
         //qDebug() << file.fileName();
         if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
             QStringList log;
@@ -63,8 +70,8 @@ void MainWindow::readFiles()
                 if(line.contains("cpu load", Qt::CaseInsensitive) &&
                         !isFirst){
                     processed = processLog(log);
-                    listTxtLog << processed;
-                    txtSerials << processed.serial_no;
+                    //listTxtLog << processed;
+                    addSerial(processed.serial_no, &txtSerials);
                     addSerial(processed.serial_no);
                     log << line;
                     continue;
@@ -72,16 +79,17 @@ void MainWindow::readFiles()
                 log << line;
                 isFirst = false;
             }
+            processed = processLog(log);
             listTxtLog << processed;
-            txtSerials << processed.serial_no;
+            addSerial(processed.serial_no, &txtSerials);
             addSerial(processed.serial_no);
             file.close();
         }
         else{
-            qDebug() << "Can't open file. : " << file.fileName();
+            qDebug() << "Can't open file. : " << file.fileName()
+                     << "\n" << file.errorString();
         }
     }
-
     /*foreach(logTxtInfo info, logList){
         qDebug() << info.cpu_load
                  << info.freemem
@@ -102,6 +110,7 @@ void MainWindow::readFiles()
                  << info.zoom_in_out << "\n";
     }*/
 }
+
 void MainWindow::readSql()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
@@ -132,8 +141,8 @@ void MainWindow::readSql()
             tmp.test_date = query.record().value("test_date").toString();
             tmp.test_person = query.record().value("test_person").toString();
             listCamTestLog << tmp;
-            camTestSerials << tmp.cam_serial;
-            addSerial(tmp.cam_hid);
+            addSerial(tmp.cam_serial, &camTestSerials);
+            addSerial(tmp.cam_serial);
         }
 
         query = db.exec("SELECT * FROM encoder_test_logging");
@@ -146,7 +155,7 @@ void MainWindow::readSql()
             tmp.operator_ = query.record().value("operator").toString();
             tmp.terminal = query.record().value("terminal").toString();
             listEncoderTestLog << tmp;
-            encoderTestSerials << tmp.encoder_serial;
+            addSerial(tmp.encoder_serial, &encoderTestSerials);
             addSerial(tmp.encoder_serial);
         }
     } catch (std::exception &e) {
@@ -272,18 +281,27 @@ void MainWindow::clearEncoderTestTab()
     ui->textBrowserEncoderTestTerminal->setText("");
 }
 
-void MainWindow::addSerial(QString serial)
+bool MainWindow::addSerial(QString serial)
 {
-    if(allSerials.contains(serial)) return;
-    if(serial.isEmpty() || serial.length() != 8) return;
+    /*if(allSerials.contains(serial)) return false;
+    if(serial.isEmpty() || serial.length() != 8) return false;
     allSerials << serial;
+    return true;*/
+    return addSerial(serial, &allSerials);
+}
+bool MainWindow::addSerial(QString serial, QStringList* list)
+{
+    if(list->contains(serial)) return false;
+    if(serial.isEmpty() || serial.length() != 8) return false;
+    *list << serial;
+    return true;
 }
 
 void MainWindow::output()
 {
-    QFile file("output.txt");
-    if(file.open(QFile::WriteOnly)){
-        QTextStream wFileStream(&file);
+    QFile fileO("output.txt");
+    if(fileO.open(QFile::WriteOnly)){
+        QTextStream wFileStream(&fileO);
         foreach(QString serial, allSerials){
             QString out = serial;
             out.append(",");
@@ -297,7 +315,45 @@ void MainWindow::output()
             wFileStream << out;
         }
     }
-    file.close();
+    fileO.close();
+
+    QFile fileT("outputTxtLog.txt");
+    if(fileT.open(QFile::WriteOnly)){
+        QTextStream wFileStream(&fileT);
+        foreach(QString serial, txtSerials){
+            QString out = serial;
+            out.append("\n");
+            wFileStream << out;
+        }
+    }
+    fileT.close();
+
+    QFile fileC("outputCamTestLog.txt");
+    if(fileC.open(QFile::WriteOnly)){
+        QTextStream wFileStream(&fileC);
+        foreach(QString serial, camTestSerials){
+            QString out = serial;
+            out.append("\n");
+            wFileStream << out;
+        }
+    }
+    fileC.close();
+
+    QFile fileE("outputEncoderTestLog.txt");
+    if(fileE.open(QFile::WriteOnly)){
+        QTextStream wFileStream(&fileE);
+        foreach(QString serial, encoderTestSerials){
+            QString out = serial;
+            out.append("\n");
+            wFileStream << out;
+        }
+    }
+    fileE.close();
+
+    qDebug() << "All serials: " << allSerials.length()
+             << "\nTxt log: " << txtSerials.length()
+             << "\nCam test log: " << camTestSerials.length()
+             << "\nEncoder test log: " << encoderTestSerials.length();
 }
 
 void MainWindow::onSerialChanged(QString text)
@@ -373,7 +429,7 @@ logTxtInfo processLog(QStringList log)
                 log.length() > i + 1){
             txtInfo.hardware_id = log.at(i + 1);
         }
-        else if(line.contains("Serial No", Qt::CaseInsensitive) &&
+        else if(line.contains("serial", Qt::CaseInsensitive) &&
                 log.length() > i + 1){
             txtInfo.serial_no = log.at(i + 1);
         }
@@ -423,7 +479,6 @@ logTxtInfo processLog(QStringList log)
             txtInfo.zoom_in_out = line;
         }
     }
-
     return txtInfo;
 }
 logTxtInfo processLog(QString log)

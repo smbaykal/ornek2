@@ -40,7 +40,8 @@ private:
     void clearTxtTab();
     void clearCamTestTab();
     void clearEncoderTestTab();
-    void addSerial(QString serial);
+    bool addSerial(QString serial);
+    bool addSerial(QString serial, QStringList* list);
     void output();
 
 
