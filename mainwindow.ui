@@ -2,52 +2,594 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>600</width>
+    <height>750</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>800</width>
+    <height>2501</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QComboBox" name="comboBox"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>PushButton</string>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QComboBox" name="comboBoxSerials">
+      <property name="editable">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelSerialNo">
-        <property name="text">
-         <string>Seri no</string>
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>700</height>
+       </size>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tabTxtLog">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>Text log</string>
+       </attribute>
+       <layout class="QFormLayout" name="formLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QTextBrowser" name="textBrowserSerialNo"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelUsedIn">
-        <property name="text">
-         <string>Kullanıldığı yerler</string>
+        <property name="rowWrapPolicy">
+         <enum>QFormLayout::DontWrapRows</enum>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QTextBrowser" name="textBrowserUsedIn"/>
-      </item>
-     </layout>
+        <property name="labelAlignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <item row="0" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtCpuLoad">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="14" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtZoomIn">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="16" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtZoomInOut">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="15" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtZoomOut">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtHighState">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtLowState">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtAudioCardRecord">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtInfoTest">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtErrorCode">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtMacAddr">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtResolutions">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtFpsValue">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtSerialNo">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtHardwareId">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtFirmwareVersion">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtUptime">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QTextBrowser" name="textBrowserTxtFreemem">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>30</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="labelTxtCpuLoad">
+          <property name="text">
+           <string>Cpu load</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelTxtFreemem">
+          <property name="text">
+           <string>Freemem</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelTxtUptime">
+          <property name="text">
+           <string>Uptime</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelTxtFirmwareVersion">
+          <property name="text">
+           <string>Firmware version</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="labelTxtHardwareId">
+          <property name="text">
+           <string>Hardware ID</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="labelTxtSerialNo">
+          <property name="text">
+           <string>Serial No</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="labelTxtFpsValue">
+          <property name="text">
+           <string>Fps value</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="labelTxtResolutions">
+          <property name="text">
+           <string>Resolutions</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QLabel" name="labelTxtMacAddr">
+          <property name="text">
+           <string>Mac address</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="0">
+         <widget class="QLabel" name="labelTxtErrorCode">
+          <property name="text">
+           <string>Error code</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="0">
+         <widget class="QLabel" name="labelTxtInfoTest">
+          <property name="text">
+           <string>Info Test</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0">
+         <widget class="QLabel" name="labelTxtAudioCardRecord">
+          <property name="text">
+           <string>Audio Card</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="0">
+         <widget class="QLabel" name="labelTxtLowState">
+          <property name="text">
+           <string>Low state</string>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="0">
+         <widget class="QLabel" name="labelTxtHighState">
+          <property name="text">
+           <string>High state</string>
+          </property>
+         </widget>
+        </item>
+        <item row="14" column="0">
+         <widget class="QLabel" name="labelTxtZoomIn">
+          <property name="text">
+           <string>Zoom in</string>
+          </property>
+         </widget>
+        </item>
+        <item row="15" column="0">
+         <widget class="QLabel" name="labelTxtZoomOut">
+          <property name="text">
+           <string>Zoom out</string>
+          </property>
+         </widget>
+        </item>
+        <item row="16" column="0">
+         <widget class="QLabel" name="labelTxtZoomInOut">
+          <property name="text">
+           <string>Zoom in&amp;out</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabCamTestLog">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>Cam test log</string>
+       </attribute>
+       <layout class="QFormLayout" name="formLayout_2">
+        <item row="1" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestCamHid"/>
+        </item>
+        <item row="11" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestTestDate"/>
+        </item>
+        <item row="12" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestTestPerson"/>
+        </item>
+        <item row="10" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestTestState"/>
+        </item>
+        <item row="9" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestCamCpu"/>
+        </item>
+        <item row="8" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestCamVersion"/>
+        </item>
+        <item row="7" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestCamMac"/>
+        </item>
+        <item row="6" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestCamFps"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestCamZoom"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestCamIo"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestCamAudio"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QTextBrowser" name="textBrowserCamTestCamSerial"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelCamTestCamHid">
+          <property name="text">
+           <string>Cam hid</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelCamTestCamSerial">
+          <property name="text">
+           <string>Cam serial</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelCamTestCamAudio">
+          <property name="text">
+           <string>Cam audio</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="labelCamTestCamIo">
+          <property name="text">
+           <string>Cam IO</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="labelCamTestCamZoom">
+          <property name="text">
+           <string>Cam zoom</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="labelCamTestCamFps">
+          <property name="text">
+           <string>Cam fps</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="labelCamTestCamMac">
+          <property name="text">
+           <string>Cam mac</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QLabel" name="labelCamTestCamVersion">
+          <property name="text">
+           <string>Cam version</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="0">
+         <widget class="QLabel" name="labelCamTestCamCpu">
+          <property name="text">
+           <string>Cam cpu</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="0">
+         <widget class="QLabel" name="labelCamTestTestState">
+          <property name="text">
+           <string>Test state</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0">
+         <widget class="QLabel" name="labelCamTestTestDate">
+          <property name="text">
+           <string>Test date</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="0">
+         <widget class="QLabel" name="labelCamTestTestPerson">
+          <property name="text">
+           <string>Test person</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <widget class="QComboBox" name="comboBoxCamTestDate"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabEncoderTestLog">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>Encoder test log</string>
+       </attribute>
+       <layout class="QFormLayout" name="formLayout_3">
+        <item row="1" column="1">
+         <widget class="QTextBrowser" name="textBrowserEncoderTestEncoderSerial"/>
+        </item>
+        <item row="6" column="1">
+         <widget class="QTextBrowser" name="textBrowserEncoderTestTerminal"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="QTextBrowser" name="textBrowserEncoderTestOperator"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="QTextBrowser" name="textBrowserEncoderTestDate"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QTextBrowser" name="textBrowserEncoderTestErrCode"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QTextBrowser" name="textBrowserEncoderTestOpcode"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelEncoderTestEncoderSerial">
+          <property name="text">
+           <string>Encoder serial</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelEncoderTestOpcode">
+          <property name="text">
+           <string>Opcode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelEncoderTestErrCode">
+          <property name="text">
+           <string>Error code</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="labelEncoderTestDate">
+          <property name="text">
+           <string>Date</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="labelEncoderTestOperator">
+          <property name="text">
+           <string>Operator</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="labelEncoderTestTerminal">
+          <property name="text">
+           <string>Terminal</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <widget class="QComboBox" name="comboBoxEncoderTestDate"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>

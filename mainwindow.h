@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QStringList>
+#include <QCompleter>
+#include "structs.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,19 +20,30 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QList<logTxtInfo> listTxtLog;
+    QList<logCamTest> listCamTestLog;
+    QList<logEncoderTest> listEncoderTestLog;
+    QStringList listEncoderDate;
+    QStringList listCamDate;
     QStringList allSerials;
-    QStringList serialsFromTxt;
-    QStringList serialsFromCamTest;
-    QStringList serialsFromEncoder;
-    int serialCount;
+    QCompleter* serialCompleter;
 
     void readFiles();
     void readSql();
+    void fillData(QString serial);
+    void fillTxtTab(QString serial);
+    void fillCamTestTab(QString serial, QString date);
+    void fillEncoderTestTab(QString serial, QString date);
+    void clearTxtTab();
+    void clearCamTestTab();
+    void clearEncoderTestTab();
+    void addSerial(QString serial);
 
 
 private slots:
-    void refreshInfoForm();
-    void buttonClick();
+    void onSerialChanged(QString);
+    void onCamTestDateChanged(QString);
+    void onEncoderTestDateChanged(QString);
 };
 
 #endif // MAINWINDOW_H
