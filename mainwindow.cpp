@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QIODevice>
 #include <QtSql>
+#include <QtAlgorithms>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "structs.h"
@@ -35,7 +36,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->comboBoxEncoderTestDate, SIGNAL(currentIndexChanged(QString)),
             this, SLOT(onEncoderTestDateChanged(QString)));
 
-    //output(); //txt output
+    qSort(allSerials.begin(), allSerials.end());
+
+    output(); //txt output
 }
 
 MainWindow::~MainWindow()
