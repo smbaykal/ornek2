@@ -26,6 +26,9 @@ private:
     QStringList listEncoderDate;
     QStringList listCamDate;
     QStringList allSerials;
+    QStringList txtSerials;
+    QStringList camTestSerials;
+    QStringList encoderTestSerials;
     QCompleter* serialCompleter;
 
     void readFiles();
@@ -38,6 +41,7 @@ private:
     void clearCamTestTab();
     void clearEncoderTestTab();
     void addSerial(QString serial);
+    void output();
 
 
 private slots:

@@ -34,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(onCamTestDateChanged(QString)));
     connect(ui->comboBoxEncoderTestDate, SIGNAL(currentIndexChanged(QString)),
             this, SLOT(onEncoderTestDateChanged(QString)));
+
+    //output(); //txt output
 }
 
 MainWindow::~MainWindow()
@@ -59,6 +61,7 @@ void MainWindow::readFiles()
                         !isFirst){
                     processed = processLog(log);
                     listTxtLog << processed;
+                    txtSerials << processed.serial_no;
                     addSerial(processed.serial_no);
                     log << line;
                     continue;
@@ -67,6 +70,7 @@ void MainWindow::readFiles()
                 isFirst = false;
             }
             listTxtLog << processed;
+            txtSerials << processed.serial_no;
             addSerial(processed.serial_no);
             file.close();
         }
@@ -125,6 +129,7 @@ void MainWindow::readSql()
             tmp.test_date = query.record().value("test_date").toString();
             tmp.test_person = query.record().value("test_person").toString();
             listCamTestLog << tmp;
+            camTestSerials << tmp.cam_serial;
             addSerial(tmp.cam_hid);
         }
 
@@ -138,6 +143,7 @@ void MainWindow::readSql()
             tmp.operator_ = query.record().value("operator").toString();
             tmp.terminal = query.record().value("terminal").toString();
             listEncoderTestLog << tmp;
+            encoderTestSerials << tmp.encoder_serial;
             addSerial(tmp.encoder_serial);
         }
     } catch (std::exception &e) {
@@ -268,6 +274,27 @@ void MainWindow::addSerial(QString serial)
     if(allSerials.contains(serial)) return;
     if(serial.isEmpty() || serial.length() != 8) return;
     allSerials << serial;
+}
+
+void MainWindow::output()
+{
+    QFile file("output.txt");
+    if(file.open(QFile::WriteOnly)){
+        QTextStream wFileStream(&file);
+        foreach(QString serial, allSerials){
+            QString out = serial;
+            out.append(",");
+            if(txtSerials.contains(serial)) out.append("1,");
+            else out.append("0,");
+            if(camTestSerials.contains(serial)) out.append("1,");
+            else out.append("0,");
+            if(encoderTestSerials.contains(serial)) out.append("1\n");
+            else out.append("0\n");
+            //qDebug() << out;
+            wFileStream << out;
+        }
+    }
+    file.close();
 }
 
 void MainWindow::onSerialChanged(QString text)
