@@ -1,0 +1,5 @@
+outputTxtLog.txt : Birbirinden farklı *.txt dosyalarından gelen tüm seri numaralarını sıralı biçimde tutuyor. Hata kodu ayrımı yapmıyor.
+
+outputCamTestLog.txt : Birbirinden farklı bilkon_cam_test_log tablosundan gelen hata kodlarında cam_audio=OK, cam_io=OK ve cam_zoom=OK olan tüm seri numaralarını sıralı biçimde tutuyor.
+
+outputEncoderTestLog.txt : Birbirinden farklı  encoder_test_logging tablosundan gelen hata kodlarında err_code=0 olan tüm seri numaralarını sıralı biçimde tutuyor.

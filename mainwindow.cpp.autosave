@@ -136,7 +136,6 @@ void MainWindow::readSql()
                 m_dbPassword,
                 m_dbPort);
     QSqlQuery query = db.getData("bilkon_cam_test_log");
-    int i = 0;
     while(query.next()){
         logCamTest tmp;
         //
@@ -155,16 +154,12 @@ void MainWindow::readSql()
         tmp.test_date = query.record().value("test_date").toString();
         tmp.test_person = query.record().value("test_person").toString();
         listCamTestLog << tmp;
-        i++;
         addSerial(tmp.cam_serial, &camTestSerials);
         addSerial(tmp.cam_serial);
     }
-    qDebug() << i;
-    qDebug() << encoderTestSerials.length();
 
     query = db.getData("encoder_test_logging");
 
-    i = 0;
     while(query.next()){
         logEncoderTest tmp;
         tmp.encoder_serial = query.record().value("encoder_serial").toString();
@@ -174,12 +169,9 @@ void MainWindow::readSql()
         tmp.operator_ = query.record().value("operator").toString();
         tmp.terminal = query.record().value("terminal").toString();
         listEncoderTestLog << tmp;
-        i++;
         addSerial(tmp.encoder_serial, &encoderTestSerials);
         addSerial(tmp.encoder_serial);
     }
-    qDebug() << i;
-    qDebug() << encoderTestSerials.length();
 }
 
 void MainWindow::fillTxtTab(QString serial)
