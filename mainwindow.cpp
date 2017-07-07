@@ -36,6 +36,7 @@ logTxtInfo processLog(QString log);
 QStringList getSerialListFromFile(QString fileName);
 void readFiles();
 void readSql();
+void removeDuplicates();
 void sortSerials();
 void fillData(QString serial);
 void outputLog(QString serial, QString dir = "output");
@@ -62,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	fillErrorTypes();
 	readFiles();
 	readSql();
+	removeDuplicates();
 	sortSerials();
 
 	emit dataReceived();
@@ -444,6 +446,45 @@ void readSql()
 		addSerial(tmp.encoder_serial);
 	}
 }
+void removeDuplicates()
+{
+	m_allSerials = m_allSerials.toSet().toList();
+	for(int i = 0; i < m_allSerials.length(); i++){
+		forever{
+			int p=m_allSerials.lastIndexOf(m_allSerials.at(i));
+			if(p == i) break;
+			m_allSerials.removeAt(p);
+		}
+	}
+
+	m_txtSerials = m_txtSerials.toSet().toList();
+	for(int i = 0; i < m_txtSerials.length(); i++){
+		forever{
+			int p=m_txtSerials.lastIndexOf(m_txtSerials.at(i));
+			if(p == i) break;
+			m_txtSerials.removeAt(p);
+		}
+	}
+
+	m_camTestSerials = m_camTestSerials.toSet().toList();
+	for(int i = 0; i < m_camTestSerials.length(); i++){
+		forever{
+			int p=m_camTestSerials.lastIndexOf(m_camTestSerials.at(i));
+			if(p == i) break;
+			m_camTestSerials.removeAt(p);
+		}
+	}
+
+	m_encoderTestSerials = m_encoderTestSerials.toSet().toList();
+	for(int i = 0; i < m_encoderTestSerials.length(); i++){
+		forever{
+			int p=m_encoderTestSerials.lastIndexOf(m_encoderTestSerials.at(i));
+			if(p == i) break;
+			m_encoderTestSerials.removeAt(p);
+		}
+	}
+}
+
 void sortSerials()
 {
 	qSort(m_allSerials.begin(), m_allSerials.end());
@@ -690,7 +731,7 @@ bool addSerial(QString serial)
 }
 bool addSerial(QString serial, QStringList* list)
 {
-	if(list->contains(serial)) return false;
+	//if(list->contains(serial)) return false;
 	if(serial.isEmpty() || serial.length() != 8) return false;
 	*list << serial;
 	return true;
