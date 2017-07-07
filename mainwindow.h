@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStringList>
 #include <QCompleter>
+#include <QLabel>
 #include "structs.h"
 
 namespace Ui {
@@ -18,37 +19,30 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private:
-    Ui::MainWindow *ui;
-    QList<logTxtInfo> listTxtLog;
-    QList<logCamTest> listCamTestLog;
-    QList<logEncoderTest> listEncoderTestLog;
-    QStringList listEncoderDate;
-    QStringList listCamDate;
-    QStringList allSerials;
-    QStringList txtSerials;
-    QStringList camTestSerials;
-    QStringList encoderTestSerials;
-    QCompleter* serialCompleter;
+signals:
+	void dataReceived();
 
-    void readFiles();
-    void readSql();
-    void fillData(QString serial);
+private:
+	Ui::MainWindow *ui;
+    QCompleter* serialCompleter;
+	QLabel* labelInfo;
+
+	void init();
     void fillTxtTab(QString serial);
-    void fillCamTestTab(QString serial, QString date);
-    void fillEncoderTestTab(QString serial, QString date);
+	void fillCamTestTab(QString serial);
+	void fillEncoderTestTab(QString serial);
     void clearTxtTab();
     void clearCamTestTab();
     void clearEncoderTestTab();
-    bool addSerial(QString serial);
-    bool addSerial(QString serial, QStringList* list);
-    void output();
 
 
 private slots:
-    void onSerialChanged(QString);
-    void onCamTestDateChanged(QString);
-    void onEncoderTestDateChanged(QString);
+	void onDataReceived();
+	void onOutputClicked();
+	void onOutputAllClicked();
+	void onLogDirectoryChangeClicked();
+	void onOpenSerialListClicked();
+	void onSerialChanged(QString);
 };
 
 #endif // MAINWINDOW_H
