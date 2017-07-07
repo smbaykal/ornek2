@@ -6,12 +6,10 @@
 #include <QFileDialog>
 #include <QtSql>
 #include <QtAlgorithms>
-#include <QFuture>
-#include <QtConcurrent/QtConcurrent>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "structs.h"
-#include <dbhelper.h>
+#include "dbhelper.h"
 
 QString m_dbDriver("QPSQL");
 QString m_dbHostName("10.30.1.1");
@@ -42,6 +40,10 @@ void sortSerials();
 void fillData(QString serial);
 void outputLog(QString serial, QString dir = "output");
 void outputLogs(QString dir = "output");
+void outputLogs(QStringList serials, QString dir);
+void outputTxtLog(logTxtInfo info, QString dir);
+void outputCamLog(logCamTest info, QString dir);
+void outputEncLog(logEncoderTest info, QString dir);
 bool addSerial(QString serial);
 bool addSerial(QString serial, QStringList* list);
 void output();
@@ -64,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	emit dataReceived();
 
-	output(); //txt output*/
+	//output(); //txt output*/
 }
 
 MainWindow::~MainWindow()
@@ -227,7 +229,6 @@ void MainWindow::onOutputClicked()
 													QString());
 	outputLog(MainWindow::ui->comboBoxSerials->currentText(), dir);
 }
-
 void MainWindow::onOutputAllClicked()
 {
 	QString dir = QFileDialog::getExistingDirectory(this,
@@ -264,9 +265,7 @@ void MainWindow::onOpenSerialListClicked()
 													QString());
 
 	QStringList serials = getSerialListFromFile(fileName);
-	foreach(QString serial, serials){
-		outputLog(serial, dir);
-	}
+	outputLogs(serials, dir);
 
 }
 void MainWindow::onSerialChanged(QString serial)
@@ -454,104 +453,20 @@ void sortSerials()
 }
 void outputLog(QString serial, QString dir)
 {
-	QFile file(dir + "/" + serial + ".txt");
-	if(!file.open(QFile::WriteOnly)){
-		qDebug() << "Can't open file. : "  << file.fileName();
-		return;
-	}
-	QTextStream wFileStream(&file);
 	foreach(logTxtInfo info, m_listTxtLog){
 		if (!info.serial_no.contains(serial)) continue;
-		wFileStream << ":::::::::::::::::TXT\n";
-		QString o;
-		o += "CPU Load\n";
-		o += info.cpu_load + "\n";
-		o += "Freemem\n";
-		o += info.freemem + "\n";
-		o += "Uptime\n";
-		o += info.uptime + "\n";
-		o += "Firmware Version\n";
-		o += info.firmwareVersion + "\n";
-		o += "Hardware ID\n";
-		o += info.hardware_id + "\n";
-		o += "Serial No\n";
-		o += info.serial_no + "\n";
-		o += "FPS Value\n";
-		o += info.fps_value + "\n";
-		o += "Resolutions\n";
-		o += info.resolutions + "\n";
-		o += "MAC Address\n";
-		o += info.mac_addr + "\n";
-		o += "Error Code\n";
-		o += info.error_code + "\n";
-		o += info.info_test + "\n";
-		o += info.audio_card_record + "\n";
-		o += "Low State\n";
-		o += info.low_state + "\n";
-		o += "High State\n";
-		o += info.high_state + "\n";
-		o += "Zoom In\n";
-		o += info.zoom_in + "\n";
-		o += "Zoom Out\n";
-		o += info.zoom_out + "\n";
-		o += info.zoom_in_out + "\n";
-		o += "::::::::::::::::::::\n\n";
-		wFileStream << o;
+			outputTxtLog(info, dir);
 	}
 
 	foreach(logCamTest info, m_listCamTestLog){
 		if(!info.cam_serial.contains(serial)) continue;
-		wFileStream << "\n:::::::::::::::::CAM\n";
-		QString o;
-		o += "Cam Hid\n";
-		o += info.cam_hid + "\n";
-		o += "Cam Serial\n";
-		o += info.cam_serial + "\n";
-		o += "Cam Audio\n";
-		o += info.cam_audio + "\n";
-		o += "Cam IO\n";
-		o += info.cam_io + "\n";
-		o += "Cam Zoom\n";
-		o += info.cam_zoom + "\n";
-		o += "Cam FPS\n";
-		o += info.cam_fps + "\n";
-		o += "Cam MAC\n";
-		o += info.cam_mac + "\n";
-		o += "Cam Version\n";
-		o += info.cam_version + "\n";
-		o += "Cam CPU\n";
-		o += info.cam_cpu + "\n";
-		o += "Test State\n";
-		o += info.test_state + "\n";
-		o += "Test Date\n";
-		o += info.test_date + "\n";
-		o += "Test Person\n";
-		o += info.test_person + "\n";
-		o += "::::::::::::::::::::\n\n";
-		wFileStream << o;
+			outputCamLog(info, dir);
 	}
 
 	foreach(logEncoderTest info, m_listEncoderTestLog){
 		if(!info.encoder_serial.contains(serial)) continue;
-		wFileStream << "\n:::::::::::::::::ENC\n";
-		QString o;
-		o += "Encoder Serial\n";
-		o += info.encoder_serial + "\n";
-		o += "Opcode\n";
-		o += info.opcode + "\n";
-		o += "Error Code\n";
-		o += info.err_code + "\n";
-		o += "Date\n";
-		o += info.date + "\n";
-		o += "Operator\n";
-		o += info.operator_ + "\n";
-		o += "Terminal\n";
-		o += info.terminal + "\n";
-		o += "::::::::::::::::::::\n\n";
-		wFileStream << o;
+		outputEncLog(info, dir);
 	}
-
-	file.close();
 }
 void outputLogs(QString dir)
 {
@@ -560,131 +475,201 @@ void outputLogs(QString dir)
 
 	foreach(logTxtInfo info, m_listTxtLog){
 		if(!m_txtSerials.contains(info.serial_no)){
-			qDebug() << info.serial_no;
+			//qDebug() << info.serial_no;
 			continue;
 		}
-		file.setFileName(dir + "/" + info.serial_no + ".txt");
-		if(!file.open(QIODevice::WriteOnly | QIODevice::Append)){
-			qDebug() << "Can't open file. : "  << file.fileName();
-			continue;
-		}
-		wFileStream << ":::::::::::::::::TXT\n";
-		QString o;
-		o += "CPU Load\n";
-		o += info.cpu_load + "\n";
-		o += "Freemem\n";
-		o += info.freemem + "\n";
-		o += "Uptime\n";
-		o += info.uptime + "\n";
-		o += "Firmware Version\n";
-		o += info.firmwareVersion + "\n";
-		o += "Hardware ID\n";
-		o += info.hardware_id + "\n";
-		o += "Serial No\n";
-		o += info.serial_no + "\n";
-		o += "FPS Value\n";
-		o += info.fps_value + "\n";
-		o += "Resolutions\n";
-		o += info.resolutions + "\n";
-		o += "MAC Address\n";
-		o += info.mac_addr + "\n";
-		o += "Error Code\n";
-		o += info.error_code + "\n";
-		o += info.info_test + "\n";
-		o += info.audio_card_record + "\n";
-		o += "Low State\n";
-		o += info.low_state + "\n";
-		o += "High State\n";
-		o += info.high_state + "\n";
-		o += "Zoom In\n";
-		o += info.zoom_in + "\n";
-		o += "Zoom Out\n";
-		o += info.zoom_out + "\n";
-		o += info.zoom_in_out + "\n";
-		o += "::::::::::::::::::::\n\n";
-		wFileStream << o;
-		file.close();
+		outputTxtLog(info, dir);
 	}
 
 	qDebug() << "Txt log saved.";
 
 	foreach(logCamTest info, m_listCamTestLog){
 		if(!m_camTestSerials.contains(info.cam_serial)){
-			qDebug() << info.cam_serial;
+			//qDebug() << info.cam_serial;
 			continue;
 		}
-		file.setFileName(dir + "/" + info.cam_serial + ".txt");
-		if(!file.open(QIODevice::WriteOnly | QIODevice::Append)){
-			qDebug() << "Can't open file. : "  << file.fileName();
-			continue;
-		}
-		wFileStream << "\n:::::::::::::::::CAM\n";
-		QString o;
-		o += "Cam Hid\n";
-		o += info.cam_hid + "\n";
-		o += "Cam Serial\n";
-		o += info.cam_serial + "\n";
-		o += "Cam Audio\n";
-		o += info.cam_audio + "\n";
-		o += "Cam IO\n";
-		o += info.cam_io + "\n";
-		o += "Cam Zoom\n";
-		o += info.cam_zoom + "\n";
-		o += "Cam FPS\n";
-		o += info.cam_fps + "\n";
-		o += "Cam MAC\n";
-		o += info.cam_mac + "\n";
-		o += "Cam Version\n";
-		o += info.cam_version + "\n";
-		o += "Cam CPU\n";
-		o += info.cam_cpu + "\n";
-		o += "Test State\n";
-		o += info.test_state + "\n";
-		o += "Test Date\n";
-		o += info.test_date + "\n";
-		o += "Test Person\n";
-		o += info.test_person + "\n";
-		o += "::::::::::::::::::::\n\n";
-		wFileStream << o;
-		file.close();
+		outputCamLog(info, dir);
 	}
 
 	qDebug() << "Cam log saved.";
 
 	foreach(logEncoderTest info, m_listEncoderTestLog){
 		if(!m_encoderTestSerials.contains(info.encoder_serial)){
-			qDebug() << info.encoder_serial;
+			//qDebug() << info.encoder_serial;
 			continue;
 		}
-		file.setFileName(dir + "/" + info.encoder_serial + ".txt");
-		if(!file.open(QIODevice::WriteOnly | QIODevice::Append)){
-			qDebug() << "Can't open file. : "  << file.fileName();
-			continue;
-		}
-		wFileStream << "\n:::::::::::::::::ENC\n";
-		QString o;
-		o += "Encoder Serial\n";
-		o += info.encoder_serial + "\n";
-		o += "Opcode\n";
-		o += info.opcode + "\n";
-		o += "Error Code\n";
-		o += info.err_code + "\n";
-		o += "Date\n";
-		o += info.date + "\n";
-		o += "Operator\n";
-		o += info.operator_ + "\n";
-		o += "Terminal\n";
-		o += info.terminal + "\n";
-		o += "::::::::::::::::::::\n\n";
-		wFileStream << o;
-		file.close();
+		outputEncLog(info, dir);
 	}
 
 	qDebug() << "Encoder log saved.";
 
 	//file.close();
 }
+void outputLogs(QStringList serials, QString dir)
+{
+	bool isInAllSerials = false;
+	bool isInTxtSerials = false;
+	bool isInCamSerials = false;
+	bool isInEncSerials = false;
+	foreach(QString serial, serials){
+		if(m_allSerials.contains(serial)) isInAllSerials = true;
+		if(m_txtSerials.contains(serial)) isInTxtSerials = true;
+		if(m_camTestSerials.contains(serial)) isInCamSerials = true;
+		if(m_encoderTestSerials.contains(serial)) isInEncSerials = true;
+	}
 
+	if(!isInAllSerials) return;
+
+	if(isInTxtSerials){
+		foreach(logTxtInfo info, m_listTxtLog){
+			if(!serials.contains(info.serial_no)){
+				//qDebug() << info.serial_no;
+				continue;
+			}
+			outputTxtLog(info, dir);
+		}
+		qDebug() << "Txt log saved.";
+	}
+
+	if(isInCamSerials){
+		foreach(logCamTest info, m_listCamTestLog){
+			if(!serials.contains(info.cam_serial)){
+				//qDebug() << info.cam_serial;
+				continue;
+			}
+			outputCamLog(info, dir);
+		}
+		qDebug() << "Cam log saved.";
+	}
+
+	if(isInEncSerials){
+		foreach(logEncoderTest info, m_listEncoderTestLog){
+			if(!serials.contains(info.encoder_serial)){
+				//qDebug() << info.encoder_serial;
+				continue;
+			}
+			outputEncLog(info, dir);
+		}
+		qDebug() << "Encoder log saved.";
+	}
+
+	//file.close();
+}
+
+void outputTxtLog(logTxtInfo info, QString dir)
+{
+	QFile file;
+	QTextStream wFileStream(&file);
+	file.setFileName(dir + "/" + info.serial_no + ".txt");
+	if(!file.open(QIODevice::WriteOnly | QIODevice::Append)){
+		qDebug() << "Can't open file. : "  << file.fileName();
+		return;
+	}
+	wFileStream << ":::::::::::::::::TXT\n";
+	QString o;
+	o += "CPU Load\n";
+	o += info.cpu_load + "\n";
+	o += "Freemem\n";
+	o += info.freemem + "\n";
+	o += "Uptime\n";
+	o += info.uptime + "\n";
+	o += "Firmware Version\n";
+	o += info.firmwareVersion + "\n";
+	o += "Hardware ID\n";
+	o += info.hardware_id + "\n";
+	o += "Serial No\n";
+	o += info.serial_no + "\n";
+	o += "FPS Value\n";
+	o += info.fps_value + "\n";
+	o += "Resolutions\n";
+	o += info.resolutions + "\n";
+	o += "MAC Address\n";
+	o += info.mac_addr + "\n";
+	o += "Error Code\n";
+	o += info.error_code + "\n";
+	o += info.info_test + "\n";
+	o += info.audio_card_record + "\n";
+	o += "Low State\n";
+	o += info.low_state + "\n";
+	o += "High State\n";
+	o += info.high_state + "\n";
+	o += "Zoom In\n";
+	o += info.zoom_in + "\n";
+	o += "Zoom Out\n";
+	o += info.zoom_out + "\n";
+	o += info.zoom_in_out + "\n";
+	o += "::::::::::::::::::::\n\n";
+	wFileStream << o;
+	file.close();
+}
+
+void outputCamLog(logCamTest info, QString dir)
+{
+	QFile file;
+	QTextStream wFileStream(&file);
+	file.setFileName(dir + "/" + info.cam_serial + ".txt");
+	if(!file.open(QIODevice::WriteOnly | QIODevice::Append)){
+		qDebug() << "Can't open file. : "  << file.fileName();
+		return;
+	}
+	wFileStream << ":::::::::::::::::CAM\n";
+	QString o;
+	o += "Cam Hid\n";
+	o += info.cam_hid + "\n";
+	o += "Cam Serial\n";
+	o += info.cam_serial + "\n";
+	o += "Cam Audio\n";
+	o += info.cam_audio + "\n";
+	o += "Cam IO\n";
+	o += info.cam_io + "\n";
+	o += "Cam Zoom\n";
+	o += info.cam_zoom + "\n";
+	o += "Cam FPS\n";
+	o += info.cam_fps + "\n";
+	o += "Cam MAC\n";
+	o += info.cam_mac + "\n";
+	o += "Cam Version\n";
+	o += info.cam_version + "\n";
+	o += "Cam CPU\n";
+	o += info.cam_cpu + "\n";
+	o += "Test State\n";
+	o += info.test_state + "\n";
+	o += "Test Date\n";
+	o += info.test_date + "\n";
+	o += "Test Person\n";
+	o += info.test_person + "\n";
+	o += "::::::::::::::::::::\n\n";
+	wFileStream << o;
+	file.close();
+}
+
+void outputEncLog(logEncoderTest info, QString dir)
+{
+	QFile file;
+	QTextStream wFileStream(&file);
+	file.setFileName(dir + "/" + info.encoder_serial + ".txt");
+	if(!file.open(QIODevice::WriteOnly | QIODevice::Append)){
+		qDebug() << "Can't open file. : "  << file.fileName();
+		return;
+	}
+	wFileStream << ":::::::::::::::::ENC\n";
+	QString o;
+	o += "Encoder Serial\n";
+	o += info.encoder_serial + "\n";
+	o += "Opcode\n";
+	o += info.opcode + "\n";
+	o += "Error Code\n";
+	o += info.err_code + "\n";
+	o += "Date\n";
+	o += info.date + "\n";
+	o += "Operator\n";
+	o += info.operator_ + "\n";
+	o += "Terminal\n";
+	o += info.terminal + "\n";
+	o += "::::::::::::::::::::\n\n";
+	wFileStream << o;
+	file.close();
+}
 
 void fillErrorTypes()
 {
