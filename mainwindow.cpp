@@ -229,6 +229,7 @@ void MainWindow::onOutputClicked()
 	QString dir = QFileDialog::getExistingDirectory(this,
 													tr("Select dir to save"),
 													QString());
+	if(dir.isEmpty()) return;
 	outputLog(MainWindow::ui->comboBoxSerials->currentText(), dir);
 }
 void MainWindow::onOutputAllClicked()
@@ -238,6 +239,7 @@ void MainWindow::onOutputAllClicked()
 													"",
 													QFileDialog::ShowDirsOnly |
 													QFileDialog::DontResolveSymlinks);
+	if(dir.isEmpty()) return;
 	outputLogs(dir);
 }
 void MainWindow::onLogDirectoryChangeClicked()
@@ -247,12 +249,14 @@ void MainWindow::onLogDirectoryChangeClicked()
 													"",
 													QFileDialog::ShowDirsOnly |
 													QFileDialog::DontResolveSymlinks);
+	if(m_logDir.isEmpty()) return;
 	foreach(QString serial, m_txtSerials){
 		m_allSerials.removeOne(serial);
 	}
 	m_txtSerials.clear();
 	m_listTxtLog.clear();
 	readFiles();
+	removeDuplicates();
 	sortSerials();
 	emit MainWindow::dataReceived();
 }
@@ -262,10 +266,11 @@ void MainWindow::onOpenSerialListClicked()
 												tr("Select file"),
 												QString(),
 												"Text files (*.txt)");
+	if(fileName.isEmpty()) return;
 	QString dir = QFileDialog::getExistingDirectory(this,
 													tr("Select dir to save"),
 													QString());
-
+	if(dir.isEmpty()) return;
 	QStringList serials = getSerialListFromFile(fileName);
 	outputLogs(serials, dir);
 
